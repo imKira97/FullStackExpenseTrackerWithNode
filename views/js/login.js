@@ -14,12 +14,15 @@ form.addEventListener("submit", (e) => {
     .post("http://localhost:4000/user/login", userDetail)
     .then((result) => {
       console.log(result);
+      if (result.status === 201) {
+        document.querySelector("#errorText").innerHTML = "Login SuccessFully";
+      }
     })
     .catch((err) => {
-      if (err.response.data.message === "user does not  exist") {
-        document.querySelector("#errorText").innerHTML = "user does not  exist";
-      } else if (err.response.data.message === "email incorrect") {
-      } else if (err.response.data.message === "password incorrect") {
+      if (err.response.status === 401) {
+        document.querySelector("#errorText").innerHTML = "User not authorized";
+      } else if (err.response.status === 404) {
+        document.querySelector("#errorText").innerHTML = "User not found";
       } else {
         document.querySelector(
           "#errorText"

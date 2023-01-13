@@ -55,14 +55,14 @@ exports.loginUser = async (req, res, next) => {
 
       if (isUserPassword) {
         console.log("success");
-        res.status(201).json({ message: "login Success" });
+        return res.status(201).json({ message: "login Success" });
       } else {
         console.log("password fail");
-        res.status(401).json({ message: "password does not match" });
+        return res.status(401).json({ message: "User not authorized  " });
       }
     } else {
       console.log("user not exist");
-      res.status(401).json({ message: "user doesnot exist" });
+      return res.status(404).json({ message: "User not found" });
     }
   } catch (err) {
     console.log(err);
