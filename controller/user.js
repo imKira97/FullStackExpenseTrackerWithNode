@@ -1,4 +1,5 @@
 const User = require("../model/user");
+const bcrypt = require("bcrypt");
 
 exports.getUser = async (req, res, next) => {
   await User.findAll()
@@ -23,7 +24,8 @@ exports.newUser = async (req, res, next) => {
       const data = {
         name: name,
         email: email,
-        password: password,
+        //10 act as salt (randomize )
+        password: await bcrypt.hash(password, 10),
       };
       const user = await User.create(data);
       console.log(user);
@@ -50,7 +52,9 @@ exports.loginUser = async (req, res, next) => {
      */
 
     if (userMatch) {
-      if (userMatch.password === password) {
+      const isUserPassword = await bcrypt.compare(password, userMatch.password);
+
+      if (isUserPassword) {
         console.log("success");
         return res.status(201).json({ message: "login Success" });
       } else {
