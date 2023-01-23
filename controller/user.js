@@ -1,5 +1,6 @@
 const User = require("../model/user");
 const bcrypt = require("bcrypt");
+const path = require("path");
 
 exports.getUser = async (req, res, next) => {
   await User.findAll()
@@ -56,9 +57,11 @@ exports.loginUser = async (req, res, next) => {
 
       if (isUserPassword) {
         console.log("success");
+
         return res.status(201).json({ message: "login Success" });
       } else {
         console.log("password fail");
+
         return res.status(401).json({ message: "User not authorized  " });
       }
     } else {

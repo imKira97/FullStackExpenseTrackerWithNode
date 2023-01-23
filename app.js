@@ -6,10 +6,14 @@ const sequelize = require("./util/database");
 
 const app = express();
 const userSignUp = require("./route/user");
+const expenseRoute = require("./route/expense");
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(expenseRoute);
+
 app.use(userSignUp);
+
 sequelize
   .sync()
   .then((result) => {

@@ -15,7 +15,9 @@ form.addEventListener("submit", (e) => {
     .then((result) => {
       console.log(result);
       if (result.status === 201) {
-        document.querySelector("#errorText").innerHTML = "Login SuccessFully";
+        alert("login SuccessFully");
+        //this will redirect to addExpense
+        window.location.href = "../html/addExpense.html";
       }
     })
     .catch((err) => {

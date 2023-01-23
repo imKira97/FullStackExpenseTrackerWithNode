@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    
+    <!--MDB-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.css" rel="stylesheet"/>
+    <title>Login</title>
+    <style>
+        body{
+            background: linear-gradient(to right, rgba(132, 250, 176, 1), rgba(143, 211, 244, 1))
+        }
+        table{
+            background: wheat;
+        }
+        
+    </style>
+    
+
+</head>
+<body>
+    <div class="container">
+        <table id="record1" class="table border border-5 border-dark m-5 p-5">
+            <form id="myForm">
+                <tr>
+                    <th colspan="2"  style="text-align: center;font-size:larger;">Expense Tracker</th>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="amount" class="form-label">Choose Expense Amount</label>
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <input type="number" id="expenseAmount" name="amountInput" class="form-control " required>
+                            <button class="btn btn-primary disabled ">₹</button>
+                            
+                        </div>
+                        
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="descrption" class="form-label">Description</label>
+                    </td>
+                    <td>
+                        <input type="text" id="desc" name="expenseDesc" class="form-control">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="category" class="form-label">Choose Expense category</label>
+                    </td>
+                    <td>
+                        <select name="expenseCategory" id="selectCategory" class="form-select" required>
+                            <option value="movie">Movie</option>
+                            <option value="bills">Bills</option>
+                            <option value="petrol">Petrol</option>
+                            <option value="food">Food</option>
+                            <option value="misc" selected>Miscellaneous</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" ></td>
+                </tr>
+                
+            </form>
+        </table>
+        <ul id="expenseList" class="list-group list-group-numbered"></ul>
+    </div>
+</body>
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+<script src="../js/expense.js"></script>
+</html>
