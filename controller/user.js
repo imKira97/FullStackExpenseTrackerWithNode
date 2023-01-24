@@ -2,6 +2,7 @@ const User = require("../model/user");
 const bcrypt = require("bcrypt");
 const path = require("path");
 
+const jwt = require("jsonwebtoken");
 exports.getUser = async (req, res, next) => {
   await User.findAll()
     .then((result) => {
@@ -57,8 +58,11 @@ exports.loginUser = async (req, res, next) => {
 
       if (isUserPassword) {
         console.log("success");
-
-        return res.status(201).json({ message: "login Success" });
+        return res.status(201).json({
+          user: email,
+          message: "login Success",
+          token: generateToken(userMatch.id),
+        });
       } else {
         console.log("password fail");
 
@@ -72,3 +76,7 @@ exports.loginUser = async (req, res, next) => {
     console.log(err);
   }
 };
+
+function generateToken(id) {
+  return jwt.sign({ userId: id }, "321sadwewe0129asd28sadewq2");
+}

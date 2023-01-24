@@ -2,7 +2,7 @@ const Expense = require("../model/expense");
 
 exports.getExpense = async (req, res, next) => {
   console.log("getExpense");
-  await Expense.findAll()
+  await Expense.findAll({ where: { userId: req.user.id } })
     .then((expenses) => {
       res.status(200).json({ expenses: expenses });
     })
@@ -13,7 +13,8 @@ exports.getExpense = async (req, res, next) => {
 
 exports.addExpense = async (req, res, next) => {
   try {
-    console.log("addExpense");
+    //console.log("addExpense");
+    console.log("sdsadqewq" + req.user.id);
     const expenseAmount = req.body.amount;
     const description = req.body.description;
     const category = req.body.category;
@@ -25,6 +26,7 @@ exports.addExpense = async (req, res, next) => {
         amount: expenseAmount,
         description: description,
         category: category,
+        userId: req.user.id,
       });
       console.log("expenseData" + expenseData);
       res

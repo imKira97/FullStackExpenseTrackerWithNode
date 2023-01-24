@@ -8,11 +8,17 @@ const app = express();
 const userSignUp = require("./route/user");
 const expenseRoute = require("./route/expense");
 
+//Model
+const Expense = require("./model/expense");
+const User = require("./model/user");
+
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(expenseRoute);
-
 app.use(userSignUp);
+
+User.hasMany(Expense);
+Expense.belongsTo(User);
 
 sequelize
   .sync()

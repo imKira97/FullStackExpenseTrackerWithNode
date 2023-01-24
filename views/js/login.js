@@ -8,14 +8,14 @@ form.addEventListener("submit", (e) => {
     email: email,
     password: password,
   };
-  console.log(userDetail);
-
   axios
     .post("http://localhost:4000/user/login", userDetail)
     .then((result) => {
-      console.log(result);
+      //console.log(result);
       if (result.status === 201) {
         alert("login SuccessFully");
+        //here we are setting the token of login user
+        localStorage.setItem("token", result.data.token);
         //this will redirect to addExpense
         window.location.href = "../html/addExpense.html";
       }

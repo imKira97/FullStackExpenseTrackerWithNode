@@ -1,12 +1,21 @@
 const myForm = document.getElementById("myForm");
 //ul
 const expenseList = document.getElementById("expenseList");
+const table = document.getElementById("record1");
 
 let editExpenseId = null;
+const token = localStorage.getItem("token");
+const config = {
+  headers: {
+    Authorization: token,
+  },
+};
 //to display message
 window.addEventListener("DOMContentLoaded", () => {
+  //getting the token
+
   axios
-    .get("http://localhost:4000/user/expense/getExpense")
+    .get("http://localhost:4000/user/expense/getExpense", config)
     .then((res) => {
       for (let i = 0; i < res.data.expenses.length; i++) {
         console.log(res.data.expenses[i]);
@@ -26,7 +35,11 @@ function saveExpense(e) {
     category: document.getElementById("selectCategory").value,
   };
   axios
-    .post("http://localhost:4000/user/expense/addExpense", expenseDetails)
+    .post(
+      "http://localhost:4000/user/expense/addExpense",
+      expenseDetails,
+      config
+    )
     .then((res) => {
       console.log(res);
       toCreateListItem(expenseDetails);
@@ -53,7 +66,8 @@ function toCreateListItem(expenseData) {
   deleteButton.addEventListener("click", function () {
     axios
       .delete(
-        `http://localhost:4000/user/expense/deleteExpense/${expenseData.id}`
+        `http://localhost:4000/user/expense/deleteExpense/${expenseData.id}`,
+        config
       )
       .then((res) => {
         console.log(res.data);
