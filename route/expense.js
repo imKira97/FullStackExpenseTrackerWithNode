@@ -9,10 +9,16 @@ const authUser = require("../middleware/auth");
 
 //onreload
 router.get(
+  "/user/Status",
+  authUser.authenticate,
+  expenseController.getUserStatus
+);
+router.get(
   "/user/expense/getExpense",
   authUser.authenticate,
   expenseController.getExpense
 );
+
 router.post(
   "/user/expense/addExpense",
   jsonparser,

@@ -14,15 +14,43 @@ const config = {
 window.addEventListener("DOMContentLoaded", () => {
   //getting the token
 
-  axios
-    .get("http://localhost:4000/user/expense/getExpense", config)
-    .then((res) => {
-      for (let i = 0; i < res.data.expenses.length; i++) {
-        console.log(res.data.expenses[i]);
-        toCreateListItem(res.data.expenses[i]);
+  const req1 = axios.get("http://localhost:4000/user/Status", config);
+  const req2 = axios.get(
+    "http://localhost:4000/user/expense/getExpense",
+    config
+  );
+  axios.all([req1, req2]).then(
+    axios.spread(function (res1, res2) {
+      const isPremiumUser = res1.data.isPremiumUser;
+      if (isPremiumUser) {
+        document.getElementById("buy_premium").innerHTML =
+          "You are a Premium User";
+        document.getElementById("buy_premium").disabled = true;
+      }
+
+      for (let i = 0; i < res2.data.expenses.length; i++) {
+        toCreateListItem(res2.data.expenses[i]);
       }
     })
-    .catch((err) => console.log(err));
+  );
+
+  // axios
+  //   .get("http://localhost:4000/user/Status", config)
+  //   .then((res) => {
+  //     console.log("res status" + res.isPremiumUser);
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  // axios
+  //   .get("http://localhost:4000/user/expense/getExpense", config)
+  //   .then((res) => {
+  //     for (let i = 0; i < res.data.expenses.length; i++) {
+  //       console.log(res.data.expenses[i]);
+  //       toCreateListItem(res.data.expenses[i]);
+  //     }
+  //   })
+  //   .catch((err) => console.log(err));
 });
 
 myForm.addEventListener("submit", saveExpense);
@@ -100,18 +128,30 @@ document.getElementById("buy_premium").onclick = async function (e) {
         {
           orderid: options.order_id,
           paymentid: response.razorpay_payment_id,
+          status: "success",
         },
         config
       );
       console.log("options" + options);
       alert("Your are a premium user now");
+      document.getElementById("buy_premium").innerHTML =
+        "You are a Premium User";
+      document.getElementById("buy_premium").disabled = true;
     },
   };
   const rzp1 = new Razorpay(options);
   rzp1.open(); //this opens razorpay payment
   e.preventDefault();
-  rzp1.on("payment.failed", function (response) {
-    console.log(response);
+  rzp1.on("payment.failed", async function (response) {
+    await axios.post(
+      "http://localhost:4000/user/purchase/updateTranscationStatus",
+      {
+        orderid: options.order_id,
+        paymentid: response.razorpay_payment_id,
+        status: "failed",
+      },
+      config
+    );
     alert("something went wrong");
   });
 };

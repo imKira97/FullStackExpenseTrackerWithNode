@@ -23,6 +23,8 @@ form.addEventListener("submit", (e) => {
     .post("http://localhost:4000/user/signUp", userDetail)
     .then((result) => {
       console.log("res" + result);
+      alert("signup success");
+      window.location.href = "../html/login.html";
     })
     .catch((err) => {
       if (err.response.data.message === "user already exist") {

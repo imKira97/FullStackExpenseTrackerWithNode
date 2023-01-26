@@ -1,9 +1,24 @@
 const Expense = require("../model/expense");
+const User = require("../model/user");
+
+exports.getUserStatus = async (req, res, next) => {
+  await User.findOne({ where: { id: req.user.id } })
+    .then((user) => {
+      console.log(user.isPremiumUser);
+      if (user.isPremiumUser === true) {
+        res.status(201).json({ isPremiumUser: true });
+      } else {
+        res.status(201).json({ isPremiumUser: false });
+      }
+    })
+    .catch((err) => console.log(err));
+};
 
 exports.getExpense = async (req, res, next) => {
   console.log("getExpense");
   await Expense.findAll({ where: { userId: req.user.id } })
     .then((expenses) => {
+      console.log("expenses" + expenses.length);
       res.status(200).json({ expenses: expenses });
     })
     .catch((err) => {
