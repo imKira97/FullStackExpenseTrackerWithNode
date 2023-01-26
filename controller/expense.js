@@ -14,7 +14,7 @@ exports.getExpense = async (req, res, next) => {
 exports.addExpense = async (req, res, next) => {
   try {
     //console.log("addExpense");
-    console.log("sdsadqewq" + req.user.id);
+
     const expenseAmount = req.body.amount;
     const description = req.body.description;
     const category = req.body.category;

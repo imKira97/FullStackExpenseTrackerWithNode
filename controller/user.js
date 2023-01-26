@@ -78,5 +78,5 @@ exports.loginUser = async (req, res, next) => {
 };
 
 function generateToken(id) {
-  return jwt.sign({ userId: id }, "321sadwewe0129asd28sadewq2");
+  return jwt.sign({ userId: id }, process.env.TOKEN_SECRET);
 }

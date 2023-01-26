@@ -8,7 +8,7 @@
     
     <!--MDB-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.css" rel="stylesheet"/>
-    <title>Login</title>
+    <title>Expense</title>
     <style>
         body{
             background: linear-gradient(to right, rgba(132, 250, 176, 1), rgba(143, 211, 244, 1))
@@ -23,10 +23,13 @@
 </head>
 <body>
     <div class="container">
-        <table id="record1" class="table border border-5 border-dark m-5 p-5">
+        <button id="buy_premium"class="btn btn-primary float-end">Buy Premium Membership</button>
+
+        <table id="record1" class="table border border-5 border-dark pt-5">
             <form id="myForm">
                 <tr>
                     <th colspan="2"  style="text-align: center;font-size:larger;">Expense Tracker</th>
+                    
                 </tr>
                 <tr>
                     <td>
@@ -81,4 +84,7 @@
     
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
 <script src="../js/expense.js"></script>
+
+<!--razorpay-->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </html>

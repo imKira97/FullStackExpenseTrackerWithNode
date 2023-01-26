@@ -80,3 +80,38 @@ function toCreateListItem(expenseData) {
   li.appendChild(deleteButton);
   expenseList.appendChild(li);
 }
+
+//razorpay
+document.getElementById("buy_premium").onclick = async function (e) {
+  console.log("hello");
+  const response = await axios.get(
+    "http://localhost:4000/user/purchase/premiumMember",
+    config
+  );
+  console.log("response" + response);
+
+  var options = {
+    key: response.data.key_id,
+    order_id: response.data.order.id, //handler will be called when payment is successfully
+
+    handler: async function (response) {
+      await axios.post(
+        "http://localhost:4000/user/purchase/updateTranscationStatus",
+        {
+          orderid: options.order_id,
+          paymentid: response.razorpay_payment_id,
+        },
+        config
+      );
+      console.log("options" + options);
+      alert("Your are a premium user now");
+    },
+  };
+  const rzp1 = new Razorpay(options);
+  rzp1.open(); //this opens razorpay payment
+  e.preventDefault();
+  rzp1.on("payment.failed", function (response) {
+    console.log(response);
+    alert("something went wrong");
+  });
+};
