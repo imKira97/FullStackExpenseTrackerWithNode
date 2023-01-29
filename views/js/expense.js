@@ -2,6 +2,7 @@ const myForm = document.getElementById("myForm");
 //ul
 const expenseList = document.getElementById("expenseList");
 const table = document.getElementById("record1");
+var leaderDiv = document.getElementById("leaderBoard");
 
 let editExpenseId = null;
 const token = localStorage.getItem("token");
@@ -14,44 +15,60 @@ const config = {
 window.addEventListener("DOMContentLoaded", () => {
   //getting the token
 
-  const req1 = axios.get("http://localhost:4000/user/Status", config);
-  const req2 = axios.get(
-    "http://localhost:4000/user/expense/getExpense",
-    config
-  );
-  axios.all([req1, req2]).then(
-    axios.spread(function (res1, res2) {
-      const isPremiumUser = res1.data.isPremiumUser;
-      if (isPremiumUser) {
+  axios
+    .get("http://localhost:4000/user/expense/getExpense", config)
+    .then((res) => {
+      console.log(res);
+      if (res.data.isPremiumUser) {
         document.getElementById("buy_premium").innerHTML =
           "You are a Premium User";
         document.getElementById("buy_premium").disabled = true;
+        leaderShipBtn();
       }
 
-      for (let i = 0; i < res2.data.expenses.length; i++) {
-        toCreateListItem(res2.data.expenses[i]);
+      for (let i = 0; i < res.data.expenses.length; i++) {
+        toCreateListItem(res.data.expenses[i]);
       }
     })
-  );
-
-  // axios
-  //   .get("http://localhost:4000/user/Status", config)
-  //   .then((res) => {
-  //     console.log("res status" + res.isPremiumUser);
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //   });
-  // axios
-  //   .get("http://localhost:4000/user/expense/getExpense", config)
-  //   .then((res) => {
-  //     for (let i = 0; i < res.data.expenses.length; i++) {
-  //       console.log(res.data.expenses[i]);
-  //       toCreateListItem(res.data.expenses[i]);
-  //     }
-  //   })
-  //   .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+    });
 });
+
+function leaderShipBtn() {
+  var leaderShipButton = document.createElement("button");
+  leaderShipButton.innerHTML = "Show LeaderBoard";
+
+  leaderDiv.appendChild(leaderShipButton);
+  leaderShipButton.addEventListener("click", () => {
+    axios
+      .get("http://localhost:4000/premium/leaderBoardSum", config)
+      .then((res) => {
+        const userData = res.data.userData;
+        console.log(userData);
+
+        var ul = document.createElement("ul");
+        var li = document.createElement("li");
+
+        for (let i = 0; i < userData.length; i++) {
+          createLeaderBoardList(userData[i]);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
+}
+
+function createLeaderBoardList(data) {
+  var ul = document.createElement("ul");
+  var li = document.createElement("li");
+
+  li.appendChild(document.createTextNode(`${data.total_spend} ${data.name}`));
+
+  ul.appendChild(li);
+  leaderDiv.appendChild(ul);
+}
 
 myForm.addEventListener("submit", saveExpense);
 function saveExpense(e) {
@@ -71,6 +88,7 @@ function saveExpense(e) {
     .then((res) => {
       console.log(res);
       toCreateListItem(expenseDetails);
+      window.location.reload();
     })
     .catch((err) => {
       console.log(err);
@@ -137,6 +155,7 @@ document.getElementById("buy_premium").onclick = async function (e) {
       document.getElementById("buy_premium").innerHTML =
         "You are a Premium User";
       document.getElementById("buy_premium").disabled = true;
+      leaderShipBtn();
     },
   };
   const rzp1 = new Razorpay(options);

@@ -1,29 +1,33 @@
 const Expense = require("../model/expense");
 const User = require("../model/user");
+const sequelize = require("../util/database");
 
-exports.getUserStatus = async (req, res, next) => {
-  await User.findOne({ where: { id: req.user.id } })
-    .then((user) => {
-      console.log(user.isPremiumUser);
-      if (user.isPremiumUser === true) {
-        res.status(201).json({ isPremiumUser: true });
-      } else {
-        res.status(201).json({ isPremiumUser: false });
-      }
-    })
-    .catch((err) => console.log(err));
+exports.getLeaderBoard = async (req, res, next) => {
+  try {
+    const userData = await sequelize.query(
+      "select SUM(AMOUNT) as total_spend ,name from full_expense.expenses inner join full_expense.users  on expenses.userId=users.id GROUP BY userId order by total_spend  desc  ; ;"
+    );
+    console.log(userData[0]);
+    res.status(201).json({ userData: userData[0] });
+  } catch (err) {
+    console.log(err);
+  }
 };
-
 exports.getExpense = async (req, res, next) => {
-  console.log("getExpense");
-  await Expense.findAll({ where: { userId: req.user.id } })
-    .then((expenses) => {
-      console.log("expenses" + expenses.length);
-      res.status(200).json({ expenses: expenses });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  try {
+    console.log("getExpense");
+
+    const user = await User.findOne({ where: { id: req.user.id } });
+    const expenses = await Expense.findAll({ where: { userId: req.user.id } });
+
+    if (user.isPremiumUser === true) {
+      res.status(201).json({ isPremiumUser: true, expenses: expenses });
+    } else {
+      res.status(201).json({ isPremiumUser: false, expenses: expenses });
+    }
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 exports.addExpense = async (req, res, next) => {
