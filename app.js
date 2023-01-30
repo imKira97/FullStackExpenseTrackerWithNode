@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 var cors = require("cors");
 const sequelize = require("./util/database");
+const sib = require("sib-api-v3-sdk");
 
 const app = express();
 const userSignUp = require("./route/user");
