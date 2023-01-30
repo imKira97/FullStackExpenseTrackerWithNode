@@ -5,7 +5,7 @@ const sequelize = require("../util/database");
 exports.getLeaderBoard = async (req, res, next) => {
   try {
     const userData = await sequelize.query(
-      "select SUM(AMOUNT) as total_spend ,name from full_expense.expenses inner join full_expense.users  on expenses.userId=users.id GROUP BY userId order by total_spend  desc  ; ;"
+      "select SUM(AMOUNT) as total_spend ,name from full_expense.expenses left join full_expense.users  on expenses.userId=users.id GROUP BY userId order by total_spend  desc ;"
     );
     console.log(userData[0]);
     res.status(201).json({ userData: userData[0] });

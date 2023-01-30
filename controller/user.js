@@ -3,6 +3,11 @@ const bcrypt = require("bcrypt");
 const path = require("path");
 
 const jwt = require("jsonwebtoken");
+
+exports.forgetPassword = async (req, res, next) => {
+  console.log("hello");
+  console.log(req.body);
+};
 exports.getUser = async (req, res, next) => {
   await User.findAll()
     .then((result) => {

@@ -2,7 +2,9 @@ const myForm = document.getElementById("myForm");
 //ul
 const expenseList = document.getElementById("expenseList");
 const table = document.getElementById("record1");
-var leaderDiv = document.getElementById("leaderBoard");
+
+var leaderListDiv = document.getElementById("leaderBoard");
+var leaderBtnDiv = document.getElementById("showLeaderShipButton");
 
 let editExpenseId = null;
 const token = localStorage.getItem("token");
@@ -39,7 +41,7 @@ function leaderShipBtn() {
   var leaderShipButton = document.createElement("button");
   leaderShipButton.innerHTML = "Show LeaderBoard";
 
-  leaderDiv.appendChild(leaderShipButton);
+  leaderBtnDiv.appendChild(leaderShipButton);
   leaderShipButton.addEventListener("click", () => {
     axios
       .get("http://localhost:4000/premium/leaderBoardSum", config)
@@ -65,9 +67,8 @@ function createLeaderBoardList(data) {
   var li = document.createElement("li");
 
   li.appendChild(document.createTextNode(`${data.total_spend} ${data.name}`));
-
   ul.appendChild(li);
-  leaderDiv.appendChild(ul);
+  leaderListDiv.appendChild(ul);
 }
 
 myForm.addEventListener("submit", saveExpense);
