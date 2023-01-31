@@ -1,44 +1,8 @@
 const User = require("../model/user");
 const bcrypt = require("bcrypt");
-const path = require("path");
-
-var nodemailer = require("nodemailer");
 
 const jwt = require("jsonwebtoken");
 
-exports.forgetPassword = async (req, res, next) => {
-  const emailId = req.body.emailId;
-
-  const isRegistered = await User.findOne({ where: { email: emailId } });
-
-  if (isRegistered) {
-    console.log(isRegistered.email);
-    console.log("email" + process.env.user_email);
-    var transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.user_email,
-        pass: process.env.user_email_password,
-      },
-    });
-
-    var mailOptions = {
-      from: process.env.user_email,
-      to: emailId,
-      subject: "Password reset mail",
-      text: "Demo",
-    };
-    transporter.sendMail(mailOptions, function (err, info) {
-      if (err) {
-        console.log(err);
-      } else {
-        res.status(201).json({ message: "success" });
-      }
-    });
-  } else {
-    res.status(401).json({ message: "user is not registered" });
-  }
-};
 exports.getUser = async (req, res, next) => {
   await User.findAll()
     .then((result) => {
