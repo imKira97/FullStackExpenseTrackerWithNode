@@ -6,21 +6,22 @@ const jsonparser = bodyParser.json();
 
 const passwordController = require("../controller/password");
 const authUser = require("../middleware/auth");
-router.post(
-  "/password/forgetPassword",
-  jsonparser,
-  passwordController.forgetPassword
-);
 
+router.get(
+  "/password/updatepassword/:resetpasswordid",
+  jsonparser,
+  passwordController.updatePassword
+);
 router.get(
   "/password/resetPassword/:id",
   jsonparser,
   passwordController.resetPassword
 );
-router.post(
-  "/password/updatePassword",
+
+router.use(
+  "/password/forgetPassword",
   jsonparser,
-  passwordController.updatePassword
+  passwordController.forgetPassword
 );
 
 module.exports = router;

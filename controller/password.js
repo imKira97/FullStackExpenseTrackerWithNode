@@ -1,92 +1,128 @@
 const User = require("../model/user");
-var nodemailer = require("nodemailer");
-const jwt = require("jsonwebtoken");
-const path = require("path");
-const rootDir = require("../util/path");
+// var nodemailer = require("nodemailer");
+// const path = require("path");
+// const rootDir = require("../util/path");
 const bcrypt = require("bcrypt");
+const sgMail = require("@sendgrid/mail");
+const uuid = require("uuid");
+
+/**
+ Here we will use sendGrid API
+ instead of nodemailer
+ */
 
 const ForgetPassword = require("../model/forgetPassword");
-const { where } = require("sequelize");
-
-var transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.user_email,
-    pass: process.env.user_email_password,
-  },
-});
-
-exports.resetPassword = async (req, res, next) => {
-  try {
-    const checkResetStatus = await ForgetPassword.findOne({
-      where: { id: req.params.id },
-    });
-    if (checkResetStatus) {
-      res
-        .status(201)
-        .sendFile(path.join(rootDir, "views", "html", "resetPassword.html"));
-    }
-  } catch (err) {
-    console.log(err);
-  }
-};
 
 exports.forgetPassword = async (req, res, next) => {
   try {
     const emailId = req.body.emailId;
-    const isRegistered = await User.findOne({ where: { email: emailId } });
-    if (isRegistered) {
-      console.log(isRegistered);
-      const forgetReq = await ForgetPassword.create({
-        userId: isRegistered.id,
+    const isUser = await User.findOne({ where: { email: emailId } });
+    if (isUser) {
+      console.log(isUser);
+      const id = uuid.v4();
+      isUser.createForgetPassword({ id, active: true }).catch((err) => {
+        console.log(err);
       });
-      console.log(forgetReq);
+      sgMail.setApiKey(process.env.SEND_GRID_API);
 
-      var mailOptions = {
-        from: process.env.user_email,
+      const msg = {
         to: emailId,
-        subject: "Password reset mail",
+        from: "codingshiva97@gmail.com",
+        subject: "Reset Password Request",
         html: `<h3>Click on the below link to reset your password</h3>
-              <br>
-              <a href='http://localhost:4000/password/resetpassword/${forgetReq.id}'>Click Here</a>
-        `,
+        <br>
+        <a href='http://localhost:4000/password/resetpassword/${id}'>Click Here</a>
+  `,
       };
-      transporter.sendMail(mailOptions, function (err, info) {
-        if (err) {
-          console.log(err);
-        } else {
-          res.status(201).json({ message: "success", id: forgetReq.id });
-        }
-      });
+
+      sgMail
+        .send(msg)
+        .then((response) => {
+          return res.status(response[0].statusCode).json({
+            message: "Link to reset password sent to your mail ",
+            sucess: true,
+          });
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
     } else {
-      res.status(401).json({ message: "user is not registered" });
+      return res.status(401).json({ message: "user is not registered" });
     }
+  } catch (err) {
+    console.log(err);
+    return res.status(401).json({ message: err, sucess: false });
+  }
+};
+
+exports.resetPassword = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    console.log("id " + id);
+    ForgetPassword.findOne({ where: { id: id } }).then((result) => {
+      if (result) {
+        if (result.active) {
+          result.update({ active: false });
+          res.status(200).send(`<html>  
+                                  <script>
+                                  
+                                      function formsubmitted(e){
+                                        e.preventDefault();
+                                        console.log('called')
+                                      }
+                                    </script>
+                                      <form action="/password/updatepassword/${id}" method="get">
+                                          <label for="newpassword">Enter New password</label>
+                                          <input name="newpassword" type="password" required></input>
+                                          <button>reset password</button>
+                                      </form>
+                                  </html>`);
+          res.end();
+        } else {
+          res.status(402).json({ err: "link expired" });
+        }
+      }
+    });
   } catch (err) {
     console.log(err);
   }
 };
-
 exports.updatePassword = async (req, res, next) => {
   try {
-    const email = req.body.data.emailId;
-    const newPassword = await bcrypt.hash(req.body.data.password, 10);
-    const statusId = req.body.data.id;
-    const updateUserPwd = await User.update(
-      { password: newPassword },
-      { where: { email: email } }
+    console.log("uppdate password");
+    const { newpassword } = req.query;
+    const { resetpasswordid } = req.params;
+
+    ForgetPassword.findOne({ where: { id: resetpasswordid } }).then(
+      (result) => {
+        User.findOne({ where: { id: result.userId } }).then((user) => {
+          if (user) {
+            bcrypt.genSalt(10, function (err, salt) {
+              if (err) {
+                console.log(err);
+                throw new Error(err);
+              }
+              bcrypt.hash(newpassword, salt, function (err, hash) {
+                if (err) {
+                  console.log(err);
+                  throw new Error(err);
+                }
+                user.update({ password: hash }).then(() => {
+                  res
+                    .status(201)
+                    .json({ message: "Successfuly update the new password" });
+                });
+              });
+            });
+          } else {
+            return res
+              .status(404)
+              .json({ error: "No user Exists", success: false });
+          }
+        });
+      }
     );
-    const updateStatus = await ForgetPassword.update(
-      { status: false },
-      { where: { id: statusId } }
-    );
-    Promise.all([updateStatus, updateUserPwd])
-      .then(() => {
-        return res.status(201).json("success");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   } catch (err) {
-    console.log(err);
+    return res.status(403).json({ err, success: false });
   }
 };

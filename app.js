@@ -3,10 +3,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 var cors = require("cors");
-const sequelize = require("./util/database");
-const sib = require("sib-api-v3-sdk");
 
-const app = express();
+const sequelize = require("./util/database");
 const userSignUp = require("./route/user");
 const expenseRoute = require("./route/expense");
 const purchaseRoute = require("./route/purchase");
@@ -18,7 +16,11 @@ const User = require("./model/user");
 const Order = require("./model/orders");
 const ForgetPassword = require("./model/forgetPassword");
 
+const app = express();
+
 app.use(cors());
+app.use(express.json());
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passwordRoute);
 app.use(expenseRoute);

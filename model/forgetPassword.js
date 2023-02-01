@@ -7,11 +7,10 @@ const ForgetPassword = sequelize.define("forgetPassword", {
     type: Sequelize.UUID,
     allowNull: false,
     primaryKey: true,
-    defaultValue: uuidv4(),
   },
-  status: {
+  active: {
     type: Sequelize.BOOLEAN,
-    defaultValue: true,
   },
+  expiresby: Sequelize.DATE,
 });
 module.exports = ForgetPassword;
