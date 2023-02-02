@@ -25,6 +25,7 @@ window.addEventListener("DOMContentLoaded", () => {
         document.getElementById("buy_premium").innerHTML =
           "You are a Premium User";
         document.getElementById("buy_premium").disabled = true;
+        document.getElementById("premiumFront").style.display = "block";
         leaderShipBtn();
       }
 
@@ -153,10 +154,11 @@ document.getElementById("buy_premium").onclick = async function (e) {
       );
       console.log("options" + options);
       alert("Your are a premium user now");
-      document.getElementById("buy_premium").innerHTML =
-        "You are a Premium User";
-      document.getElementById("buy_premium").disabled = true;
-      leaderShipBtn();
+      // document.getElementById("buy_premium").innerHTML =
+      //   "You are a Premium User";
+      // document.getElementById("buy_premium").disabled = true;
+      // leaderShipBtn();
+      window.location.reload();
     },
   };
   const rzp1 = new Razorpay(options);
