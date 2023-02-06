@@ -177,3 +177,24 @@ document.getElementById("buy_premium").onclick = async function (e) {
     alert("something went wrong");
   });
 };
+function downloadFile() {
+  axios
+    .get("http://localhost:4000/user/downloadFile", config)
+    .then((res) => {
+      if (res.status === 201) {
+        var a = document.createElement("a");
+        a.href = res.data.fileUrl;
+        a.download = "myExpense.csv";
+        a.click();
+      } else {
+        throw new Error(res.data.message);
+      }
+    })
+    .catch((err) => {
+      showError(err);
+    });
+}
+
+function showError(err) {
+  document.getElementById("showError").innerHTML = `${err}`;
+}

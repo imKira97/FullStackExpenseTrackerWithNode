@@ -79,6 +79,7 @@
                 
             </form>
         </table>
+        <div class="container" id="showError" style="color: red;"></div>
         <div id="showLeaderShipButton"></div>
         <div id="listDiv" class="w-100 m-5"style="font-size: larger; color: blue;" >
             <ul id="expenseList" class="list-group list-group-numbered"></ul>
@@ -139,7 +140,7 @@
             </table>
         </div>
         <div class=" d-flex flex-row-reverse ">
-            <button id="downloadExpense" class="btn  btn-outline-primary ">Download Expense</button>
+            <button id="downloadExpense" onclick="downloadFile()" class="btn  btn-outline-primary ">Download Expense</button>
         </div>
 
             

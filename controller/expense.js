@@ -1,6 +1,56 @@
 const Expense = require("../model/expense");
 const User = require("../model/user");
 const sequelize = require("../util/database");
+const AWS = require("aws-sdk");
+
+function uploadToS3(data, filename) {
+  const BUCKET_NAME = process.env.BUCKET_NAME;
+  const IAM_USER_KEY = process.env.IAM_USER_KEY;
+  const IAM_USER_SECRET_ID = process.env.IAM_USER_SECRET_ID;
+
+  //creating s3 instance
+  let s3Bucket = new AWS.S3({
+    accessKeyId: IAM_USER_KEY,
+    secretAccessKey: IAM_USER_SECRET_ID,
+  });
+
+  var params = {
+    Bucket: BUCKET_NAME,
+    Key: filename,
+    Body: data,
+    ACL: "public-read",
+  };
+  return new Promise((resolve, reject) => {
+    s3Bucket.upload(params, (err, s3Response) => {
+      if (err) {
+        console.log("Something Went Wrong in Upload", err);
+        reject(err);
+      } else {
+        resolve(s3Response.Location);
+      }
+    });
+  });
+}
+exports.downloadExpenseFile = async (req, res, next) => {
+  try {
+    console.log("in download");
+
+    const expenses = await await Expense.findAll({
+      where: { userId: req.user.id },
+    });
+    console.log(expenses);
+    //this array we have to convert into string
+    const stringifiedExpenses = JSON.stringify(expenses);
+    //depending on user and date we want to upload file
+    const fileName = `ExpenseData_${req.user.id}/${new Date()}.txt`;
+    //once we upload file to s3 we will get file url from s3
+    const fileUrl = await uploadToS3(stringifiedExpenses, fileName);
+
+    res.status(201).json({ fileUrl: fileUrl, success: true });
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 exports.getLeaderBoard = async (req, res, next) => {
   try {
@@ -71,6 +121,7 @@ exports.deleteExpense = async (req, res, next) => {
     console.log(err);
   }
 };
+
 exports.get404 = (req, res, next) => {
   res.status(404).render("404", { pageTitle: "Page Not Found", path: "/404" });
 };

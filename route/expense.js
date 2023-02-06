@@ -33,4 +33,11 @@ router.delete(
   expenseController.deleteExpense
 );
 
+router.get(
+  "/user/downloadFile",
+  authUser.authenticate,
+  jsonparser,
+  expenseController.downloadExpenseFile
+);
+
 module.exports = router;
