@@ -42,9 +42,9 @@ exports.loginUser = async (req, res, next) => {
   try {
     const email = req.body.email;
     const password = req.body.password;
-    console.log(email + " dasdsa " + password);
+
     const userMatch = await User.findOne({ where: { email: email } });
-    console.log("match " + userMatch);
+
     /**
      1st find user with that email 
      if found than checks password matches or not 

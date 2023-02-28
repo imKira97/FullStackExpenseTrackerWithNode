@@ -1,7 +1,9 @@
 const Expense = require("../model/expense");
 const User = require("../model/user");
 const sequelize = require("../util/database");
+const FileHistory = require("../model/fileDownload");
 const AWS = require("aws-sdk");
+const { where } = require("sequelize");
 
 function uploadToS3(data, filename) {
   const BUCKET_NAME = process.env.BUCKET_NAME;
@@ -45,10 +47,16 @@ exports.downloadExpenseFile = async (req, res, next) => {
     const fileName = `ExpenseData_${req.user.id}/${new Date()}.txt`;
     //once we upload file to s3 we will get file url from s3
     const fileUrl = await uploadToS3(stringifiedExpenses, fileName);
-
+    const data = {
+      fileUrl: fileUrl,
+      userId: req.user.id,
+    };
+    const addFileInDb = await FileHistory.create(data);
+    console.log(addFileInDb);
     res.status(201).json({ fileUrl: fileUrl, success: true });
   } catch (err) {
     console.log(err);
+    res.status(500).json({ fileUrl: "", success: false, err: err });
   }
 };
 
@@ -69,9 +77,16 @@ exports.getExpense = async (req, res, next) => {
 
     const user = await User.findOne({ where: { id: req.user.id } });
     const expenses = await Expense.findAll({ where: { userId: req.user.id } });
-
+    const fileHistory = await FileHistory.findAll({
+      attributes: ["fileUrl"],
+      where: { userId: req.user.id },
+    });
     if (user.isPremiumUser === true) {
-      res.status(201).json({ isPremiumUser: true, expenses: expenses });
+      res.status(201).json({
+        isPremiumUser: true,
+        expenses: expenses,
+        fileHistory: fileHistory,
+      });
     } else {
       res.status(201).json({ isPremiumUser: false, expenses: expenses });
     }
@@ -97,7 +112,14 @@ exports.addExpense = async (req, res, next) => {
         category: category,
         userId: req.user.id,
       });
-      console.log("expenseData" + expenseData);
+      const updatedTotalExpense =
+        Number(req.user.totalExpense) + Number(expenseAmount);
+      console.log(updatedTotalExpense);
+      User.update(
+        { totalExpense: updatedTotalExpense },
+        { where: { id: req.user.id } }
+      );
+
       res
         .status(201)
         .json({ message: "expense Data Added", data: expenseData });
@@ -114,6 +136,14 @@ exports.deleteExpense = async (req, res, next) => {
     if (!expense) {
       throw new Error("Expense Not Found");
     } else {
+      const updatedTotalExpense =
+        Number(req.user.totalExpense) - Number(expense.amount);
+
+      console.log(updatedTotalExpense);
+      User.update(
+        { totalExpense: updatedTotalExpense },
+        { where: { id: req.user.id } }
+      );
       await expense.destroy();
       res.status(200).json({ message: "expense deleted" });
     }
