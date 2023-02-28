@@ -63,7 +63,7 @@ exports.downloadExpenseFile = async (req, res, next) => {
 exports.getLeaderBoard = async (req, res, next) => {
   try {
     const userData = await sequelize.query(
-      "select SUM(AMOUNT) as total_spend ,name from full_expense.expenses left join full_expense.users  on expenses.userId=users.id GROUP BY userId order by total_spend  desc ;"
+      "select name,totalExpense from full_expense.users;"
     );
     console.log(userData[0]);
     res.status(201).json({ userData: userData[0] });

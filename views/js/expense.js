@@ -67,7 +67,7 @@ function createLeaderBoardList(data) {
   var ul = document.createElement("ul");
   var li = document.createElement("li");
 
-  li.appendChild(document.createTextNode(`${data.total_spend} ${data.name}`));
+  li.appendChild(document.createTextNode(`${data.totalExpense} ${data.name}`));
   ul.appendChild(li);
   leaderListDiv.appendChild(ul);
 }
@@ -90,6 +90,7 @@ function saveExpense(e) {
     .then((res) => {
       console.log(res);
       toCreateListItem(expenseDetails);
+      window.location.reload();
     })
     .catch((err) => {
       console.log(err);
