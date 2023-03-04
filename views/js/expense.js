@@ -56,6 +56,7 @@ function leaderShipBtn() {
         for (let i = 0; i < userData.length; i++) {
           createLeaderBoardList(userData[i]);
         }
+        leaderShipButton.disabled = true;
       })
       .catch((err) => {
         console.log(err);
@@ -200,6 +201,7 @@ function showFileHistory(data) {
   let headerRow = table.insertRow();
   let header1 = headerRow.insertCell(0);
   let header2 = headerRow.insertCell(1);
+  header1.style.paddingRight = "20px"; // add padding between header cells
   header1.innerHTML = "<b> Sr.No </b>";
   header2.innerHTML = "<b>File Link</b>";
 
@@ -207,7 +209,7 @@ function showFileHistory(data) {
     let row = table.insertRow();
     let col1 = row.insertCell(0);
     let col2 = row.insertCell(1);
-    col1.innerHTML = ` ${i}`;
+    col1.innerHTML = ` ${i + 1}`;
     col2.innerHTML = `<a href='${data[i].fileUrl}'> File ${i + 1}</a>`;
   }
   document.getElementById("downloadExpenseDiv").appendChild(table);
