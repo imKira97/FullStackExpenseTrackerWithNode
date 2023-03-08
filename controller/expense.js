@@ -99,56 +99,72 @@ exports.addExpense = async (req, res, next) => {
   try {
     //console.log("addExpense");
 
+    /*
+    We will sequelize transcation to handler error when we are adding,updating or deleting data 
+    
+    */
+
     const expenseAmount = req.body.amount;
     const description = req.body.description;
     const category = req.body.category;
 
+    //transcation object
+    const t = await sequelize.transaction();
     if (expenseAmount === "" || description === "" || category === "") {
       throw new Error("All Fields are required");
     } else {
-      const expenseData = await Expense.create({
-        amount: expenseAmount,
-        description: description,
-        category: category,
-        userId: req.user.id,
-      });
+      const expenseData = await Expense.create(
+        {
+          amount: expenseAmount,
+          description: description,
+          category: category,
+          userId: req.user.id,
+        },
+        { transaction: t }
+      );
       const updatedTotalExpense =
         Number(req.user.totalExpense) + Number(expenseAmount);
       console.log(updatedTotalExpense);
-      User.update(
+      await User.update(
         { totalExpense: updatedTotalExpense },
-        { where: { id: req.user.id } }
+        { where: { id: req.user.id }, transaction: t }
       );
-
-      res
+      await t.commit();
+      return res
         .status(201)
         .json({ message: "expense Data Added", data: expenseData });
     }
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    await t.rollback();
+    return res.status(400).json({ message: err.message });
   }
 };
 
 exports.deleteExpense = async (req, res, next) => {
   try {
     console.log("in delete");
-    const expense = await Expense.findOne({ where: { id: req.params.id } });
+    const t = await sequelize.transaction();
+    const expense = await Expense.findOne({
+      where: { id: req.params.id },
+      transaction: t,
+    });
     if (!expense) {
       throw new Error("Expense Not Found");
     } else {
       const updatedTotalExpense =
         Number(req.user.totalExpense) - Number(expense.amount);
-
-      console.log(updatedTotalExpense);
       User.update(
         { totalExpense: updatedTotalExpense },
-        { where: { id: req.user.id } }
+        { where: { id: req.user.id }, transaction: t }
       );
       await expense.destroy();
-      res.status(200).json({ message: "expense deleted" });
+      await t.commit();
+      return res.status(200).json({ message: "expense deleted" });
     }
   } catch (err) {
     console.log(err);
+    await t.rollback();
+    return res.status(501).json({ message: "something went wrong" });
   }
 };
 
