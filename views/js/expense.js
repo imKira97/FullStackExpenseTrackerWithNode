@@ -2,10 +2,11 @@ const myForm = document.getElementById("myForm");
 //ul
 const expenseList = document.getElementById("expenseList");
 const table = document.getElementById("record1");
+const leaderListDiv = document.getElementById("leaderBoard");
+const leaderBtnDiv = document.getElementById("showLeaderShipButton");
 
-var leaderListDiv = document.getElementById("leaderBoard");
-var leaderBtnDiv = document.getElementById("showLeaderShipButton");
-
+//pagination
+const pagination = document.getElementById("pagination");
 let editExpenseId = null;
 const token = localStorage.getItem("token");
 const config = {
@@ -16,9 +17,10 @@ const config = {
 //to display message
 window.addEventListener("DOMContentLoaded", () => {
   //getting the token
-
+  //by default page number will be 1
+  const page = 1;
   axios
-    .get("http://localhost:4000/user/expense/getExpense", config)
+    .get(`http://localhost:4000/user/expense/getExpense?page=${page}`, config)
     .then((res) => {
       if (res.data.isPremiumUser) {
         document.getElementById("buy_premium").innerHTML =
@@ -28,10 +30,10 @@ window.addEventListener("DOMContentLoaded", () => {
         leaderShipBtn();
         showFileHistory(res.data.fileHistory);
       }
-
       for (let i = 0; i < res.data.expenses.length; i++) {
         toCreateListItem(res.data.expenses[i]);
       }
+      showPagination(res.data);
     })
     .catch((err) => {
       console.log(err);
@@ -217,4 +219,50 @@ function showFileHistory(data) {
 
 function showError(err) {
   document.getElementById("showError").innerHTML = `${err}`;
+}
+
+function showPagination(pageData) {
+  const prev = pageData.hasPreviousPage;
+  const next = pageData.hasNextPage;
+  const last = pageData.lastPage;
+
+  pagination.innerHTML = "";
+
+  if (prev) {
+    const prevBtn = document.createElement("button");
+    prevBtn.innerHTML = pageData.previousPage;
+    prevBtn.addEventListener("click", () => {
+      getExpenses(pageData.previousPage);
+    });
+    pagination.appendChild(prevBtn);
+  }
+  const current = document.createElement("button");
+  current.innerHTML = pageData.currentPage;
+  pagination.appendChild(current);
+
+  if (next) {
+    const nextbtn = document.createElement("button");
+    nextbtn.innerHTML = pageData.nextPage;
+    nextbtn.addEventListener("click", () => getExpenses(pageData.nextPage));
+    pagination.appendChild(nextbtn);
+  }
+  const lastbtn = document.createElement("button");
+  lastbtn.innerHTML = "last";
+  lastbtn.addEventListener("click", () => getExpenses(last));
+  pagination.appendChild(lastbtn);
+}
+
+function getExpenses(page) {
+  expenseList.innerHTML = "";
+  axios
+    .get(`http://localhost:4000/user/expense/getExpense?page=${page}`, config)
+    .then((res) => {
+      for (let i = 0; i < res.data.expenses.length; i++) {
+        toCreateListItem(res.data.expenses[i]);
+      }
+      showPagination(res.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }

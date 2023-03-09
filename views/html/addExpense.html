@@ -22,6 +22,12 @@
         #nav_bar_a{
             color: crimson;
         }
+        .pagination{
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1rem;
+        }
         
     </style>
     
@@ -80,66 +86,18 @@
             </form>
         </table>
         <div class="container" id="showError" style="color: red;"></div>
+
         <div id="showLeaderShipButton"></div>
         <div id="listDiv" class="w-100 m-5"style="font-size: larger; color: blue;" >
             <ul id="expenseList" class="list-group list-group-numbered"></ul>
 
         </div>
+
+        <div id="pagination"></div>
         <div id="leaderBoard"></div>
 
 
         <section id="premiumFront"  style="display: none;">
-            <!-- <nav class="navbar navbar-expand ">
-                <div class="container">
-                    <ul class="navbar-nav">
-                        <li class="navbar-item">
-                            <a id="nav_bar_a" href="#" class="nav-link">Daily</a>
-                        </li>
-                        <li class="navbar-item">
-                            <a  id="nav_bar_a" href="#" class="nav-link">Monthly</a>
-                        </li>
-                        <li class="navbar-item">
-                            <a  id="nav_bar_a" href="#" class="nav-link">Yearly</a>
-                        </li>
-                    </ul>
-
-                    <button class=" btn btn-outline-black"id="downloadExpense">Download</button>
-                </div>
-            </nav> 
-            <div id="monthlyExpense"class="container">
-               <h3 >  Monthly Expense</h3>
-                <table class="table table-bordered caption-top border border-2 border-dark pt-5">
-                    <caption>Jan</caption>
-                   <thead>
-                        <th>Description</th>
-                        <th>category</th>
-                        <th>Amount</th>
-                   </thead>
-                   <tbody>
-
-                   </tbody>
-                    
-                    
-                </table>
-            </div>
-
-            <div id="yearlyExpense" class="container">
-            <h3>Year</h3>
-            <table class="table table-bordered caption-top  border-dark">
-                <caption>2023</caption>
-                <thead>
-                    <th>Month</th>
-                    <th>Total Spent</th>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Jan</td>
-                        <td>20</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        -->
         <div id="downloadExpenseDiv">
             <button id="downloadExpense" onclick="downloadFile()" class="btn  btn-outline-primary ">Download Expense</button>
         </div>

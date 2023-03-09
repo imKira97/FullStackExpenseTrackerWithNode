@@ -73,10 +73,26 @@ exports.getLeaderBoard = async (req, res, next) => {
 };
 exports.getExpense = async (req, res, next) => {
   try {
-    console.log("getExpense");
+    const page = Number(req.query.page);
 
+    //Error
+    if (page < 1) {
+      res.status(400).json({ message: "page Not Found" });
+    }
+    //count no.of expenses
+    const totalExpenseCount = await Expense.count({
+      where: { userId: req.user.id },
+    });
+    const perPage = 5;
+    const totalPage = Math.ceil(totalExpenseCount / perPage);
+
+    //user ISPremium
     const user = await User.findOne({ where: { id: req.user.id } });
-    const expenses = await Expense.findAll({ where: { userId: req.user.id } });
+    const expenses = await Expense.findAll({
+      where: { userId: req.user.id },
+      offset: (page - 1) * perPage,
+      limit: perPage,
+    });
     const fileHistory = await FileHistory.findAll({
       attributes: ["fileUrl"],
       where: { userId: req.user.id },
@@ -86,9 +102,28 @@ exports.getExpense = async (req, res, next) => {
         isPremiumUser: true,
         expenses: expenses,
         fileHistory: fileHistory,
+        totalItems: totalExpenseCount,
+        currentPage: page,
+        hasNextPage: perPage * page < totalExpenseCount,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: totalPage,
+        totalPages: totalPage,
       });
     } else {
-      res.status(201).json({ isPremiumUser: false, expenses: expenses });
+      res.status(201).json({
+        isPremiumUser: false,
+        expenses: expenses,
+        totalItems: totalItems,
+        currentPage: page,
+        hasNextPage: perPage * page < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: totalPage,
+        totalPages: totalPage,
+      });
     }
   } catch (err) {
     console.log(err);
