@@ -74,6 +74,8 @@ exports.getLeaderBoard = async (req, res, next) => {
 exports.getExpense = async (req, res, next) => {
   try {
     const page = Number(req.query.page);
+    let expense_per_page = Number(req.query.perPage);
+    console.log("per page" + expense_per_page);
 
     //Error
     if (page < 1) {
@@ -83,15 +85,15 @@ exports.getExpense = async (req, res, next) => {
     const totalExpenseCount = await Expense.count({
       where: { userId: req.user.id },
     });
-    const perPage = 5;
-    const totalPage = Math.ceil(totalExpenseCount / perPage);
+
+    const totalPage = Math.ceil(totalExpenseCount / expense_per_page);
 
     //user ISPremium
     const user = await User.findOne({ where: { id: req.user.id } });
     const expenses = await Expense.findAll({
       where: { userId: req.user.id },
-      offset: (page - 1) * perPage,
-      limit: perPage,
+      offset: (page - 1) * expense_per_page,
+      limit: expense_per_page,
     });
     const fileHistory = await FileHistory.findAll({
       attributes: ["fileUrl"],
@@ -104,12 +106,13 @@ exports.getExpense = async (req, res, next) => {
         fileHistory: fileHistory,
         totalItems: totalExpenseCount,
         currentPage: page,
-        hasNextPage: perPage * page < totalExpenseCount,
+        hasNextPage: expense_per_page * page < totalExpenseCount,
         hasPreviousPage: page > 1,
         nextPage: page + 1,
         previousPage: page - 1,
         lastPage: totalPage,
         totalPages: totalPage,
+        per_page: expense_per_page,
       });
     } else {
       res.status(201).json({
@@ -117,7 +120,7 @@ exports.getExpense = async (req, res, next) => {
         expenses: expenses,
         totalItems: totalItems,
         currentPage: page,
-        hasNextPage: perPage * page < totalItems,
+        hasNextPage: expense_per_page * page < totalItems,
         hasPreviousPage: page > 1,
         nextPage: page + 1,
         previousPage: page - 1,
