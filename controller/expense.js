@@ -74,7 +74,8 @@ exports.getLeaderBoard = async (req, res, next) => {
 exports.getExpense = async (req, res, next) => {
   try {
     const page = Number(req.query.page);
-    let expense_per_page = Number(req.query.perPage);
+    //for the first time it will be 5 than it will change
+    let expense_per_page = Number(req.query.perPage) || 5;
     console.log("per page" + expense_per_page);
 
     //Error

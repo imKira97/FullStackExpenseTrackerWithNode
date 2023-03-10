@@ -3,6 +3,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 var cors = require("cors");
+const fs = require("fs");
+
+//helmet and compression
+const helmet = require("helmet");
+const compression = require("compression");
+const morgan = require("morgan");
 
 const sequelize = require("./util/database");
 const userSignUp = require("./route/user");
@@ -21,6 +27,16 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  { flags: "a" }
+);
+
+//helmet  compression and morgan
+app.use(helmet());
+app.use(compression());
+app.use(morgan("combined", { stream: accessLogStream })); //morgan will log everything into our file
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passwordRoute);
@@ -44,7 +60,7 @@ sequelize
   .sync()
   .then((result) => {
     console.log("server running");
-    app.listen(4000);
+    app.listen(process.env.PORT_NUMBER);
   })
   .catch((err) => {
     console.log(err);
