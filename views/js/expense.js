@@ -1,7 +1,10 @@
 const myForm = document.getElementById("myForm");
 //ul
-const expenseList = document.getElementById("expenseList");
+const expenseList = document.getElementById("list_of_expense");
 const table = document.getElementById("record1");
+
+const leaderBoardBtn = document.getElementById("leaderboard_btn");
+const leaderList = document.getElementById("leaderboard_list");
 
 let editExpenseId = null;
 const token = localStorage.getItem("token");
@@ -22,10 +25,17 @@ window.addEventListener("DOMContentLoaded", () => {
   axios.all([req1, req2]).then(
     axios.spread(function (res1, res2) {
       const isPremiumUser = res1.data.isPremiumUser;
+      console.log(res2);
       if (isPremiumUser) {
         document.getElementById("buy_premium").innerHTML =
           "You are a Premium User";
         document.getElementById("buy_premium").disabled = true;
+        premiumFunction();
+      } else {
+        leaderBoardBtn.style.display = "none";
+      }
+      if (res2.data.expenses.length === 0) {
+        document.getElementById("expenseListDiv").innerHTML = "";
       }
 
       for (let i = 0; i < res2.data.expenses.length; i++) {
@@ -33,24 +43,6 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     })
   );
-
-  // axios
-  //   .get("http://localhost:4000/user/Status", config)
-  //   .then((res) => {
-  //     console.log("res status" + res.isPremiumUser);
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //   });
-  // axios
-  //   .get("http://localhost:4000/user/expense/getExpense", config)
-  //   .then((res) => {
-  //     for (let i = 0; i < res.data.expenses.length; i++) {
-  //       console.log(res.data.expenses[i]);
-  //       toCreateListItem(res.data.expenses[i]);
-  //     }
-  //   })
-  //   .catch((err) => console.log(err));
 });
 
 myForm.addEventListener("submit", saveExpense);
@@ -71,6 +63,7 @@ function saveExpense(e) {
     .then((res) => {
       console.log(res);
       toCreateListItem(expenseDetails);
+      window.location.reload();
     })
     .catch((err) => {
       console.log(err);
@@ -155,3 +148,14 @@ document.getElementById("buy_premium").onclick = async function (e) {
     alert("something went wrong");
   });
 };
+function premiumFunction() {
+  console.log("inside");
+  leaderBoardBtn.addEventListener("click", () => {
+    console.log("clicked");
+    if (leaderBoardBtn.innerText === "Show LeaderBoard") {
+      leaderBoardBtn.innerText = "hide";
+    } else {
+      leaderBoardBtn.innerText = "Show LeaderBoard";
+    }
+  });
+}
