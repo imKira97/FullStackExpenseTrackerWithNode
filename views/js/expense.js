@@ -1,9 +1,10 @@
 const myForm = document.getElementById("myForm");
 //ul
-const expenseList = document.getElementById("expenseList");
+const expenseList = document.getElementById("list_of_expense");
 const table = document.getElementById("record1");
-const leaderListDiv = document.getElementById("leaderBoard");
-const leaderBtnDiv = document.getElementById("showLeaderShipButton");
+//leaderBoard
+const leaderBoardBtn = document.getElementById("leaderboard_btn");
+const leaderList = document.getElementById("leaderboard_list");
 
 let expensePerPage = localStorage.getItem("noOfRows");
 console.log("rows" + expensePerPage);
@@ -32,9 +33,15 @@ window.addEventListener("DOMContentLoaded", () => {
           "You are a Premium User";
         document.getElementById("buy_premium").disabled = true;
         document.getElementById("premiumFront").style.display = "block";
-        leaderShipBtn();
+        premiumFunction();
         showFileHistory(res.data.fileHistory);
+      } else {
+        leaderBoardBtn.style.display = "none";
       }
+      if (res.data.expenses.length === 0) {
+        document.getElementById("expenseListDiv").innerHTML = "";
+      }
+
       for (let i = 0; i < res.data.expenses.length; i++) {
         toCreateListItem(res.data.expenses[i]);
       }
@@ -45,39 +52,39 @@ window.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-function leaderShipBtn() {
-  var leaderShipButton = document.createElement("button");
-  leaderShipButton.innerHTML = "Show LeaderBoard";
+function premiumFunction() {
+  leaderBoardBtn.addEventListener("click", () => {
+    if (leaderBoardBtn.innerText === "Show LeaderBoard") {
+      leaderBoardBtn.innerText = "hide";
+      axios
+        .get("http://localhost:4000/premium/leaderBoardSum", config)
+        .then((res) => {
+          const userData = res.data.userData;
+          console.log(userData);
 
-  leaderBtnDiv.appendChild(leaderShipButton);
-  leaderShipButton.addEventListener("click", () => {
-    axios
-      .get("http://localhost:4000/premium/leaderBoardSum", config)
-      .then((res) => {
-        const userData = res.data.userData;
-        console.log(userData);
+          var ul = document.createElement("ul");
+          var li = document.createElement("li");
 
-        var ul = document.createElement("ul");
-        var li = document.createElement("li");
-
-        for (let i = 0; i < userData.length; i++) {
-          createLeaderBoardList(userData[i]);
-        }
-        leaderShipButton.disabled = true;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+          for (let i = 0; i < userData.length; i++) {
+            createLeaderBoardList(userData[i]);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      leaderBoardBtn.innerText = "Show LeaderBoard";
+      document.getElementById("leaderboard_list").innerHTML = "";
+    }
   });
 }
 
 function createLeaderBoardList(data) {
-  var ul = document.createElement("ul");
+  const ol = document.getElementById("leaderboard_list");
   var li = document.createElement("li");
 
   li.appendChild(document.createTextNode(`${data.totalExpense} ${data.name}`));
-  ul.appendChild(li);
-  leaderListDiv.appendChild(ul);
+  ol.appendChild(li);
 }
 
 myForm.addEventListener("submit", saveExpense);

@@ -1,127 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+
     <!--MDB-->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.css" rel="stylesheet"/>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.css"
+      rel="stylesheet"
+    />
     <title>Expense</title>
     <style>
-        body{
-            background: linear-gradient(to right, rgba(132, 250, 176, 1), rgba(143, 211, 244, 1))
-        }
-        table{
-            background: wheat;
-        }
-        /* #premiumFront{
+      body {
+        background: linear-gradient(
+          to right,
+          rgba(132, 250, 176, 1),
+          rgba(143, 211, 244, 1)
+        );
+      }
+      table {
+        background: wheat;
+      }
+      /* #premiumFront{
             background: wheat;
         } */
-        #nav_bar_a{
-            color: crimson;
-        }
-        .pagination{
-            display:flex;
-            justify-content: center;
-            align-items: center;
-            margin: 1rem;
-        }
-        
+      #nav_bar_a {
+        color: crimson;
+      }
+      .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 1rem;
+      }
+
+      #deleteExpense {
+        font-weight: 800;
+        color: white;
+        background-color: #c05e5e;
+        padding: 8px;
+        border: 1px solid #ccc;
+      }
+      #deleteExpense:hover {
+        cursor: pointer;
+        background-color: rgb(194, 240, 194);
+        color: red;
+      }
+      #list_of_expense {
+        background: #3399ff;
+        padding: 20px;
+      }
+
+      #list_of_expense li {
+        background-color: #cce5ff;
+        font-weight: 800;
+        color: black;
+        padding-left: 3em;
+        margin: 2px 4px;
+        border: 1px solid #ccc;
+        list-style-position: inside;
+      }
+      #leaderboard_btn:hover {
+        cursor: pointer;
+        transform: scale(1.03);
+      }
+      #leaderboard_btn {
+        padding: 10px 15px;
+        border: 0;
+        background: #333;
+        color: #fff;
+        border-radius: 5px;
+        margin: 10px auto;
+      }
     </style>
-    
-
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <button id="buy_premium"class="btn btn-primary float-end">Buy Premium Membership</button>
+      <button id="buy_premium" class="btn btn-primary float-end">
+        Buy Premium Membership
+      </button>
 
-        <table id="record1" class="table border border-5 border-dark pt-5">
-            <form id="myForm">
-                <tr>
-                    <th colspan="2"  style="text-align: center;font-size:larger;">Expense Tracker</th>
-                    
-                </tr>
-                <tr>
-                    <td>
-                        <label for="amount" class="form-label">Choose Expense Amount</label>
-                    </td>
-                    <td>
-                        <div class="input-group">
-                            <input type="number" id="expenseAmount" name="amountInput" class="form-control " required>
-                            <button class="btn btn-primary disabled ">₹</button>
-                            
-                        </div>
-                        
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="descrption" class="form-label">Description</label>
-                    </td>
-                    <td>
-                        <input type="text" id="desc" name="expenseDesc" class="form-control">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label for="category" class="form-label">Choose Expense category</label>
-                    </td>
-                    <td>
-                        <select name="expenseCategory" id="selectCategory" class="form-select" required>
-                            <option value="movie">Movie</option>
-                            <option value="bills">Bills</option>
-                            <option value="petrol">Petrol</option>
-                            <option value="food">Food</option>
-                            <option value="misc" selected>Miscellaneous</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><input type="submit" ></td>
-                </tr>
-                
-            </form>
-        </table>
-        <div class="container" id="showError" style="color: red;"></div>
+      <table id="record1" class="table border border-5 border-dark pt-5">
+        <form id="myForm">
+          <tr>
+            <th colspan="2" style="text-align: center; font-size: larger">
+              Expense Tracker
+            </th>
+          </tr>
+          <tr>
+            <td>
+              <label for="amount" class="form-label"
+                >Choose Expense Amount</label
+              >
+            </td>
+            <td>
+              <div class="input-group">
+                <input
+                  type="number"
+                  id="expenseAmount"
+                  name="amountInput"
+                  class="form-control"
+                  required
+                />
+                <button class="btn btn-primary disabled">₹</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="descrption" class="form-label">Description</label>
+            </td>
+            <td>
+              <input
+                type="text"
+                id="desc"
+                name="expenseDesc"
+                class="form-control"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="category" class="form-label"
+                >Choose Expense category</label
+              >
+            </td>
+            <td>
+              <select
+                name="expenseCategory"
+                id="selectCategory"
+                class="form-select"
+                required
+              >
+                <option value="movie">Movie</option>
+                <option value="bills">Bills</option>
+                <option value="petrol">Petrol</option>
+                <option value="food">Food</option>
+                <option value="misc" selected>Miscellaneous</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td><input type="submit" /></td>
+          </tr>
+        </form>
+      </table>
+      <div class="container" id="showError" style="color: red"></div>
 
-        <div id="showLeaderShipButton"></div>
-        <div id="listDiv" class="w-100 m-5"style="font-size: larger; color: blue;" >
-            <ul id="expenseList" class="list-group list-group-numbered"></ul>
+      <div id="expenseListDiv"><ul id="list_of_expense"></ul></div>
+      <div id="leadBoardDiv">
+        <button id="leaderboard_btn" type="click">Show LeaderBoard</button>
+        <ol id="leaderboard_list"></ol>
+      </div>
 
+      <div id="pagination"></div>
+      <div id="expensePerPage">
+        <label for="rows">Expenses Per Page</label>
+        <select name="rows" id="expensePage">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+        <button id="setRows">Set</button>
+      </div>
+      <div id="leaderBoard"></div>
+
+      <section id="premiumFront" style="display: none">
+        <div id="downloadExpenseDiv" style="padding: 20px">
+          <button
+            id="downloadExpense"
+            onclick="downloadFile()"
+            class="btn btn-outline-primary"
+          >
+            Download Expense
+          </button>
         </div>
-
-        <div id="pagination"></div>
-        <div id="expensePerPage">
-            <label for="rows" >Expenses Per Page</label>
-            <select name="rows" id="expensePage">
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-            </select>
-            <button id="setRows">Set</button>
-        </div>
-        <div id="leaderBoard"></div>
-
-
-        <section id="premiumFront"  style="display: none;">
-        <div id="downloadExpenseDiv" style="padding:20px">
-            <button id="downloadExpense" onclick="downloadFile()" class="btn  btn-outline-primary ">Download Expense</button>
-        </div>
-
-            
-        </section>
-        
+      </section>
     </div>
-</body>
+  </body>
 
-    
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
-<script src="../js/expense.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+  <script src="../js/expense.js"></script>
 
-<!--razorpay-->
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <!--razorpay-->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </html>

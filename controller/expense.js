@@ -119,9 +119,9 @@ exports.getExpense = async (req, res, next) => {
       res.status(201).json({
         isPremiumUser: false,
         expenses: expenses,
-        totalItems: totalItems,
+        totalItems: totalExpenseCount,
         currentPage: page,
-        hasNextPage: expense_per_page * page < totalItems,
+        hasNextPage: expense_per_page * page < totalExpenseCount,
         hasPreviousPage: page > 1,
         nextPage: page + 1,
         previousPage: page - 1,
@@ -135,6 +135,7 @@ exports.getExpense = async (req, res, next) => {
 };
 
 exports.addExpense = async (req, res, next) => {
+  const t = await sequelize.transaction();
   try {
     //console.log("addExpense");
 
@@ -148,7 +149,6 @@ exports.addExpense = async (req, res, next) => {
     const category = req.body.category;
 
     //transcation object
-    const t = await sequelize.transaction();
     if (expenseAmount === "" || description === "" || category === "") {
       throw new Error("All Fields are required");
     } else {
