@@ -56,6 +56,7 @@ function premiumFunction() {
   leaderBoardBtn.addEventListener("click", () => {
     if (leaderBoardBtn.innerText === "Show LeaderBoard") {
       leaderBoardBtn.innerText = "hide";
+
       axios
         .get("http://localhost:4000/premium/leaderBoardSum", config)
         .then((res) => {
@@ -75,6 +76,7 @@ function premiumFunction() {
     } else {
       leaderBoardBtn.innerText = "Show LeaderBoard";
       document.getElementById("leaderboard_list").innerHTML = "";
+      document.getElementById("leaderboard_list").style.display = "none";
     }
   });
 }
@@ -85,6 +87,7 @@ function createLeaderBoardList(data) {
 
   li.appendChild(document.createTextNode(`${data.totalExpense} ${data.name}`));
   ol.appendChild(li);
+  ol.style.display = "block";
 }
 
 myForm.addEventListener("submit", saveExpense);

@@ -79,6 +79,17 @@
         border-radius: 5px;
         margin: 10px auto;
       }
+
+      #leaderboard_list {
+        background: #ff9999;
+        padding: 20px;
+      }
+      #leaderboard_list li {
+        background: #ffe5e5;
+        color: darkred;
+        padding: 5px;
+        margin-left: 35px;
+      }
     </style>
   </head>
   <body>
@@ -158,7 +169,7 @@
       <div id="expenseListDiv"><ul id="list_of_expense"></ul></div>
       <div id="leadBoardDiv">
         <button id="leaderboard_btn" type="click">Show LeaderBoard</button>
-        <ol id="leaderboard_list"></ol>
+        <ol id="leaderboard_list" style="display: none;"></ol>
       </div>
 
       <div id="pagination"></div>
