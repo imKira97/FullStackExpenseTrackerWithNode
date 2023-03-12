@@ -71,6 +71,19 @@ exports.getLeaderBoard = async (req, res, next) => {
     console.log(err);
   }
 };
+
+exports.fileHistory = async (req, res, next) => {
+  try {
+    const fileHistory = await FileHistory.findAll({
+      attributes: ["fileUrl"],
+      where: { userId: req.user.id },
+    });
+    res.status(200).json({ fileHistory: fileHistory });
+  } catch (err) {
+    res.status(400).json({ message: "something went wrong" });
+  }
+};
+
 exports.getExpense = async (req, res, next) => {
   try {
     const page = Number(req.query.page);
@@ -96,15 +109,10 @@ exports.getExpense = async (req, res, next) => {
       offset: (page - 1) * expense_per_page,
       limit: expense_per_page,
     });
-    const fileHistory = await FileHistory.findAll({
-      attributes: ["fileUrl"],
-      where: { userId: req.user.id },
-    });
     if (user.isPremiumUser === true) {
       res.status(201).json({
         isPremiumUser: true,
         expenses: expenses,
-        fileHistory: fileHistory,
         totalItems: totalExpenseCount,
         currentPage: page,
         hasNextPage: expense_per_page * page < totalExpenseCount,

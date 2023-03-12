@@ -6,6 +6,9 @@ const table = document.getElementById("record1");
 const leaderBoardBtn = document.getElementById("leaderboard_btn");
 const leaderList = document.getElementById("leaderboard_list");
 
+//files
+const fileHistoryBtn = document.getElementById("file_history_btn");
+
 let expensePerPage = localStorage.getItem("noOfRows");
 console.log("rows" + expensePerPage);
 //pagination
@@ -34,7 +37,6 @@ window.addEventListener("DOMContentLoaded", () => {
         document.getElementById("buy_premium").disabled = true;
         document.getElementById("premiumFront").style.display = "block";
         premiumFunction();
-        showFileHistory(res.data.fileHistory);
       } else {
         leaderBoardBtn.style.display = "none";
       }
@@ -61,11 +63,6 @@ function premiumFunction() {
         .get("http://localhost:4000/premium/leaderBoardSum", config)
         .then((res) => {
           const userData = res.data.userData;
-          console.log(userData);
-
-          var ul = document.createElement("ul");
-          var li = document.createElement("li");
-
           for (let i = 0; i < userData.length; i++) {
             createLeaderBoardList(userData[i]);
           }
@@ -79,13 +76,50 @@ function premiumFunction() {
       document.getElementById("leaderboard_list").style.display = "none";
     }
   });
+
+  fileHistoryBtn.addEventListener("click", () => {
+    const fileList = document.getElementById("file_list");
+    if (fileHistoryBtn.innerText == "Show File History") {
+      fileHistoryBtn.innerText = "Hide Files";
+      axios
+        .get("http://localhost:4000/user/fileHistory", config)
+        .then((result) => {
+          const fileData = result.data.fileHistory;
+
+          if (fileData.length === 0) {
+            const h3 = document.createElement("h3");
+            h3.innerHTML = "No File History";
+          } else {
+            for (i = 0; i < fileData.length; i++) {
+              var li = document.createElement("li");
+              var a = document.createElement("a");
+              a.href = fileData[i].fileUrl;
+              a.text = `file${i + 1}`;
+
+              li.appendChild(a);
+              fileList.appendChild(li);
+            }
+            fileList.style.display = "block";
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      fileHistoryBtn.innerText = "Show File History";
+      fileList.innerHTML = "";
+      fileList.style.display = "none";
+    }
+  });
 }
 
 function createLeaderBoardList(data) {
   const ol = document.getElementById("leaderboard_list");
   var li = document.createElement("li");
 
-  li.appendChild(document.createTextNode(`${data.totalExpense} ${data.name}`));
+  li.appendChild(
+    document.createTextNode(`${data.totalExpense} - ${data.name}`)
+  );
   ol.appendChild(li);
   ol.style.display = "block";
 }
@@ -211,25 +245,6 @@ function downloadFile() {
     .catch((err) => {
       showError(err);
     });
-}
-
-function showFileHistory(data) {
-  let table = document.createElement("table");
-  let headerRow = table.insertRow();
-  let header1 = headerRow.insertCell(0);
-  let header2 = headerRow.insertCell(1);
-  header1.style.paddingRight = "20px"; // add padding between header cells
-  header1.innerHTML = "<b> Sr.No </b>";
-  header2.innerHTML = "<b>File Link</b>";
-
-  for (let i = 0; i < data.length; i++) {
-    let row = table.insertRow();
-    let col1 = row.insertCell(0);
-    let col2 = row.insertCell(1);
-    col1.innerHTML = ` ${i + 1}`;
-    col2.innerHTML = `<a href='${data[i].fileUrl}'> File ${i + 1}</a>`;
-  }
-  document.getElementById("downloadExpenseDiv").appendChild(table);
 }
 
 function showError(err) {

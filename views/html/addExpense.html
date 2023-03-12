@@ -41,6 +41,7 @@
         margin: 1rem;
       }
 
+      #file_history_btn,
       #deleteExpense {
         font-weight: 800;
         color: white;
@@ -48,10 +49,26 @@
         padding: 8px;
         border: 1px solid #ccc;
       }
+      #file_history_btn:hover,
       #deleteExpense:hover {
         cursor: pointer;
         background-color: rgb(194, 240, 194);
         color: red;
+      }
+      
+      #downloadExpense_btn:hover,
+      #leaderboard_btn:hover {
+        cursor: pointer;
+        transform: scale(1.03);
+      }
+      #downloadExpense_btn,
+      #leaderboard_btn {
+        padding: 10px 15px;
+        border: 0;
+        background: #333;
+        color: #fff;
+        border-radius: 5px;
+        margin: 10px auto;
       }
       #list_of_expense {
         background: #3399ff;
@@ -67,18 +84,6 @@
         border: 1px solid #ccc;
         list-style-position: inside;
       }
-      #leaderboard_btn:hover {
-        cursor: pointer;
-        transform: scale(1.03);
-      }
-      #leaderboard_btn {
-        padding: 10px 15px;
-        border: 0;
-        background: #333;
-        color: #fff;
-        border-radius: 5px;
-        margin: 10px auto;
-      }
 
       #leaderboard_list {
         background: #ff9999;
@@ -89,7 +94,24 @@
         color: darkred;
         padding: 5px;
         margin-left: 35px;
+        list-style-position: inside;
       }
+
+      #file_list{
+        background: #3399ff;
+        padding: 20px;
+      }
+      #file_list li{
+        background-color: #cce5ff;
+        font-weight: 800;
+        color: black;
+        padding-left: 3em;
+        margin: 2px 4px;
+        border: 1px solid #ccc;
+        list-style-position: inside;
+        
+      }
+
     </style>
   </head>
   <body>
@@ -165,12 +187,9 @@
         </form>
       </table>
       <div class="container" id="showError" style="color: red"></div>
+     
 
       <div id="expenseListDiv"><ul id="list_of_expense"></ul></div>
-      <div id="leadBoardDiv">
-        <button id="leaderboard_btn" type="click">Show LeaderBoard</button>
-        <ol id="leaderboard_list" style="display: none;"></ol>
-      </div>
 
       <div id="pagination"></div>
       <div id="expensePerPage">
@@ -183,17 +202,27 @@
         </select>
         <button id="setRows">Set</button>
       </div>
-      <div id="leaderBoard"></div>
-
       <section id="premiumFront" style="display: none">
-        <div id="downloadExpenseDiv" style="padding: 20px">
-          <button
-            id="downloadExpense"
+        <div id="download_expense_div">
+          
+        </div>
+      <div id="leadBoardDiv">
+        <button id="leaderboard_btn" >Show LeaderBoard</button>
+        <button 
+            id="downloadExpense_btn"
             onclick="downloadFile()"
-            class="btn btn-outline-primary"
+            class="float-end"
           >
             Download Expense
           </button>
+        <ol id="leaderboard_list" style="display: none"></ol>
+      </div>
+
+     
+        <div id="downloadExpenseDiv" style="margin-top: 20px;">
+          <button id="file_history_btn">Show File History</button>
+          <ol id="file_list" style="display: none;"></ol>
+          
         </div>
       </section>
     </div>

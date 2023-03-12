@@ -14,6 +14,11 @@ router.get(
   authUser.authenticate,
   expenseController.getExpense
 );
+router.get(
+  "/user/fileHistory",
+  authUser.authenticate,
+  expenseController.fileHistory
+);
 
 router.get(
   "/premium/leaderBoardSum",
