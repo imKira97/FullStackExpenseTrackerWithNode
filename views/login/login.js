@@ -17,7 +17,7 @@ form.addEventListener("submit", (e) => {
         //here we are setting the token of login user
         localStorage.setItem("token", result.data.token);
         //this will redirect to addExpense
-        window.location.href = "../html/addExpense.html";
+        window.location.href = "../expense/addExpense.html";
       }
     })
     .catch((err) => {
