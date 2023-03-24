@@ -22,7 +22,8 @@ const User = require("./model/user");
 const Order = require("./model/orders");
 const ForgetPassword = require("./model/forgetPassword");
 const FileHistory = require("./model/fileDownload");
-
+const src = require("sib-api-v3-sdk");
+const { expressCspHeader, INLINE, NONE, SELF } = require("express-csp-header");
 const app = express();
 
 app.use(cors());
@@ -43,6 +44,15 @@ app.use(passwordRoute);
 app.use(expenseRoute);
 app.use(userSignUp);
 app.use(purchaseRoute);
+
+//this for library bootstrap and all other
+app.use(expressCspHeader({}));
+
+//serving html files
+app.use((req, res) => {
+  console.log("req url" + req.url);
+  res.sendFile(path.join(__dirname, `views/${req.url}`));
+});
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
