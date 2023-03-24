@@ -9,7 +9,7 @@ form.addEventListener("submit", (e) => {
     password: password,
   };
   axios
-    .post("http://localhost:4000/user/login", userDetail)
+    .post("https://13.233.61.14:3306/user/login", userDetail)
     .then((result) => {
       //console.log(result);
       if (result.status === 201) {
