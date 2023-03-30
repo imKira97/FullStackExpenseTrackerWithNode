@@ -3,7 +3,7 @@ const errorDiv = document.querySelector("#errorDiv");
 
 window.addEventListener("DOMContentLoaded", () => {
   axios
-    .get("https://13.233.61.14:4000/")
+    .get("https://13.127.148.238:4000:4000/")
     .then((response) => {
       console.log(response);
     })
@@ -20,7 +20,7 @@ form.addEventListener("submit", (e) => {
 
   const userDetail = { name: name, email: email, password: password };
   axios
-    .post("https://13.233.61.14:4000/user/signUp", userDetail)
+    .post("https://13.127.148.238:4000:4000/user/signUp", userDetail)
     .then((result) => {
       console.log("res" + result);
       alert("signup success");
