@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 const sequelize = new Sequelize(
   process.env.DB_SCHEMA_NAME,
   process.env.SCHEMA_USER_NAME,
-  process.env.SCEHAM_USER_PWD,
+  process.env.SCEHMA_USER_PWD,
   {
     host: process.env.DB_HOST,
     dialect: "mysql",

@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 var cors = require("cors");
 const fs = require("fs");
+const { expressCspHeader, INLINE, NONE, SELF } = require("express-csp-header");
 
 //helmet and compression
 const helmet = require("helmet");
@@ -27,6 +28,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+//this for library bootstrap and all other
 
 const accessLogStream = fs.createWriteStream(
   path.join(__dirname, "access.log"),
@@ -43,6 +45,14 @@ app.use(passwordRoute);
 app.use(expenseRoute);
 app.use(userSignUp);
 app.use(purchaseRoute);
+//this for library bootstrap and all other
+app.use(expressCspHeader({}));
+//serving files
+
+app.use((req, res) => {
+  console.log("url" + req.url);
+  res.sendFile(path.join(__dirname, `./views/${req.url}`));
+});
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
