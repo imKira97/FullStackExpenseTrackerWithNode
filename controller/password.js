@@ -31,7 +31,7 @@ exports.forgetPassword = async (req, res, next) => {
         subject: "Reset Password Request",
         html: `<h3>Click on the below link to reset your password</h3>
         <br>
-        <a href='https://13.127.148.238:4000/password/resetpassword/${id}'>Click Here</a>
+        <a href='http://13.232.221.44:4000/password/resetpassword/${id}'>Click Here</a>
   `,
       };
 
