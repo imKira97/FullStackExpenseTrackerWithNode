@@ -27,7 +27,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const page = 1;
   axios
     .get(
-      `http://3.111.53.105:4000/user/expense/getExpense?page=${page}&perPage=${expensePerPage}`,
+      `http://15.206.80.195:4000/user/expense/getExpense?page=${page}&perPage=${expensePerPage}`,
       config
     )
     .then((res) => {
@@ -60,7 +60,7 @@ function premiumFunction() {
       leaderBoardBtn.innerText = "hide";
 
       axios
-        .get("http://3.111.53.105:4000/premium/leaderBoardSum", config)
+        .get("http://15.206.80.195:4000/premium/leaderBoardSum", config)
         .then((res) => {
           const userData = res.data.userData;
           for (let i = 0; i < userData.length; i++) {
@@ -82,7 +82,7 @@ function premiumFunction() {
     if (fileHistoryBtn.innerText == "Show File History") {
       fileHistoryBtn.innerText = "Hide Files";
       axios
-        .get("http://3.111.53.105:4000/user/fileHistory", config)
+        .get("http://15.206.80.195:4000/user/fileHistory", config)
         .then((result) => {
           const fileData = result.data.fileHistory;
 
@@ -135,7 +135,7 @@ function saveExpense(e) {
   };
   axios
     .post(
-      "http://3.111.53.105:4000/user/expense/addExpense",
+      "http://15.206.80.195:4000/user/expense/addExpense",
       expenseDetails,
       config
     )
@@ -166,7 +166,7 @@ function toCreateListItem(expenseData) {
   deleteButton.addEventListener("click", function () {
     axios
       .delete(
-        `http://3.111.53.105:4000/user/expense/deleteExpense/${expenseData.id}`,
+        `http://15.206.80.195:4000/user/expense/deleteExpense/${expenseData.id}`,
         config
       )
       .then((res) => {
@@ -185,7 +185,7 @@ function toCreateListItem(expenseData) {
 document.getElementById("buy_premium").onclick = async function (e) {
   console.log("hello");
   const response = await axios.get(
-    "http://3.111.53.105:4000/user/purchase/premiumMember",
+    "http://15.206.80.195:4000/user/purchase/premiumMember",
     config
   );
   console.log("response" + response);
@@ -196,7 +196,7 @@ document.getElementById("buy_premium").onclick = async function (e) {
 
     handler: async function (response) {
       await axios.post(
-        "http://3.111.53.105:4000/user/purchase/updateTranscationStatus",
+        "http://15.206.80.195:4000/user/purchase/updateTranscationStatus",
         {
           orderid: options.order_id,
           paymentid: response.razorpay_payment_id,
@@ -218,7 +218,7 @@ document.getElementById("buy_premium").onclick = async function (e) {
   e.preventDefault();
   rzp1.on("payment.failed", async function (response) {
     await axios.post(
-      "http://3.111.53.105:4000/user/purchase/updateTranscationStatus",
+      "http://15.206.80.195:4000/user/purchase/updateTranscationStatus",
       {
         orderid: options.order_id,
         paymentid: response.razorpay_payment_id,
@@ -231,7 +231,7 @@ document.getElementById("buy_premium").onclick = async function (e) {
 };
 function downloadFile() {
   axios
-    .get("http://3.111.53.105:4000/user/downloadFile", config)
+    .get("http://15.206.80.195:4000/user/downloadFile", config)
     .then((res) => {
       if (res.status === 201) {
         var a = document.createElement("a");
@@ -289,7 +289,7 @@ function getExpenses(page, expensePerPage) {
   console.log("here" + expensePerPage);
   axios
     .get(
-      `http://3.111.53.105:4000/user/expense/getExpense?page=${page}&perPage=${expensePerPage}`,
+      `http://15.206.80.195:4000/user/expense/getExpense?page=${page}&perPage=${expensePerPage}`,
       config
     )
     .then((res) => {
