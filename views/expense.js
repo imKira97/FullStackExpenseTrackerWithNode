@@ -20,6 +20,7 @@ const config = {
     Authorization: token,
   },
 };
+
 //to display message
 window.addEventListener("DOMContentLoaded", () => {
   //getting the token
